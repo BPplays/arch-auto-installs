@@ -12,14 +12,14 @@
 # @file Preinstall
 # @brief Contains the steps necessary to configure and pacstrap the install to selected drive. 
 echo -ne "
--------------------------------------------------------------------------
-   █████╗ ██████╗  ██████╗██╗  ██╗████████╗██╗████████╗██╗   ██╗███████╗
-  ██╔══██╗██╔══██╗██╔════╝██║  ██║╚══██╔══╝██║╚══██╔══╝██║   ██║██╔════╝
-  ███████║██████╔╝██║     ███████║   ██║   ██║   ██║   ██║   ██║███████╗
-  ██╔══██║██╔══██╗██║     ██╔══██║   ██║   ██║   ██║   ██║   ██║╚════██║
-  ██║  ██║██║  ██║╚██████╗██║  ██║   ██║   ██║   ██║   ╚██████╔╝███████║
-  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+                            █████╗ ██╗   ██╗██╗
+                           ██╔══██╗██║   ██║██║
+                           ███████║██║   ██║██║
+                           ██╔══██║██║   ██║██║
+                           ██║  ██║╚██████╔╝██║
+                           ╚═╝  ╚═╝ ╚═════╝ ╚═╝
+--------------------------------------------------------------------------
                     Automated Arch Linux Installer
 -------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ pacman -S --noconfirm archlinux-keyring #update keyrings to latest to prevent pa
 pacman -S --noconfirm --needed pacman-contrib terminus-font
 setfont ter-v22b
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
-pacman -S --noconfirm --needed reflector rsync grub
+pacman -S --noconfirm --needed reflector rsync grub refind
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 echo -ne "
 -------------------------------------------------------------------------
@@ -58,9 +58,11 @@ sgdisk -Z ${DISK} # zap all on disk
 sgdisk -a 2048 -o ${DISK} # new gpt disk 2048 alignment
 
 # create partitions
-sgdisk -n 1::+1M --typecode=1:ef02 --change-name=1:'BIOSBOOT' ${DISK} # partition 1 (BIOS Boot Partition)
-sgdisk -n 2::+300M --typecode=2:ef00 --change-name=2:'EFIBOOT' ${DISK} # partition 2 (UEFI Boot Partition)
-sgdisk -n 3::-0 --typecode=3:8300 --change-name=3:'ROOT' ${DISK} # partition 3 (Root), default start, remaining
+# Create UEFI partition
+sgdisk -n 1:: -t 1:ef00 -c 1:'EFI System Partition' ${DISK}
+# Create root partition using the remaining space
+sgdisk -n 2:: -t 2:8300 -c 2:'Root Partition' ${DISK}
+
 if [[ ! -d "/sys/firmware/efi" ]]; then # Checking for bios system
     sgdisk -A 1:set:2 ${DISK}
 fi
@@ -177,7 +179,8 @@ echo -ne "
 -------------------------------------------------------------------------
 "
 if [[ ! -d "/sys/firmware/efi" ]]; then
-    grub-install --boot-directory=/mnt/boot ${DISK}
+    # grub-install --boot-directory=/mnt/boot ${DISK}
+    refind-install
 else
     pacstrap /mnt efibootmgr --noconfirm --needed
 fi

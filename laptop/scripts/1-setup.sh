@@ -4,14 +4,14 @@
 # @file Setup
 # @brief Configures installed system, installs base packages, and creates user. 
 echo -ne "
--------------------------------------------------------------------------
-   █████╗ ██████╗  ██████╗██╗  ██╗████████╗██╗████████╗██╗   ██╗███████╗
-  ██╔══██╗██╔══██╗██╔════╝██║  ██║╚══██╔══╝██║╚══██╔══╝██║   ██║██╔════╝
-  ███████║██████╔╝██║     ███████║   ██║   ██║   ██║   ██║   ██║███████╗
-  ██╔══██║██╔══██╗██║     ██╔══██║   ██║   ██║   ██║   ██║   ██║╚════██║
-  ██║  ██║██║  ██║╚██████╗██║  ██║   ██║   ██║   ██║   ╚██████╔╝███████║
-  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+                            █████╗ ██╗   ██╗██╗
+                           ██╔══██╗██║   ██║██║
+                           ███████║██║   ██║██║
+                           ██╔══██║██║   ██║██║
+                           ██║  ██║╚██████╔╝██║
+                           ╚═╝  ╚═╝ ╚═════╝ ╚═╝
+--------------------------------------------------------------------------
                     Automated Arch Linux Installer
                         SCRIPTHOME: aui
 -------------------------------------------------------------------------
@@ -126,23 +126,23 @@ fi
 #SETUP IS WRONG THIS IS RUN
 if ! source $HOME/aui/configs/setup.conf; then
 	# Loop through user input until the user gives a valid username
-	while true
-	do 
-		read -p "Please enter username:" username
-		# username regex per response here https://unix.stackexchange.com/questions/157426/what-is-the-regex-to-validate-linux-users
-		# lowercase the username to test regex
-		if [[ "${username,,}" =~ ^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$ ]]
-		then 
-			break
-		fi 
-		echo "Incorrect username."
-	done 
+	# while true
+	# do 
+	# 	read -p "Please enter username:" username
+	# 	# username regex per response here https://unix.stackexchange.com/questions/157426/what-is-the-regex-to-validate-linux-users
+	# 	# lowercase the username to test regex
+	# 	if [[ "${username,,}" =~ ^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$ ]]
+	# 	then 
+	# 		break
+	# 	fi 
+	# 	echo "Incorrect username."
+	# done 
 # convert name to lowercase before saving to setup.conf
-echo "username=${username,,}" >> ${HOME}/aui/configs/setup.conf
+# echo "username=\"${username,,}\"" >> ${HOME}/aui/configs/setup.conf
 
     #Set Password
-    read -p "Please enter password:" password
-echo "password=${password,,}" >> ${HOME}/aui/configs/setup.conf
+#     read -p "Please enter password:" password
+# echo "password=${password,,}" >> ${HOME}/aui/configs/setup.conf
 
     # Loop through user input until the user gives a valid hostname, but allow the user to force save 
 	while true
