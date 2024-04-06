@@ -1,3 +1,5 @@
+#! /usr/bin/zsh
+
 setopt nocorrect
 pacman -Sy --noconfirm git yes
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts
